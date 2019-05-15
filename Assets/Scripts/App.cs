@@ -1,22 +1,38 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using Unity.UIWidgets;
+using Unity.UIWidgets.engine;
+using Unity.UIWidgets.material;
+using Unity.UIWidgets.Redux;
+using Unity.UIWidgets.ui;
+using Unity.UIWidgets.widgets;
 using UnityEngine;
-
 
 namespace PomodoroApp
 {
-    public class App : MonoBehaviour
+    public class App : UIWidgetsPanel
     {
-        // Start is called before the first frame update
-        void Start()
+        protected override void OnEnable()
         {
+            base.OnEnable();
 
+            FontManager.instance.addFont(Resources.Load<Font>(path: "MaterialIcons-Regular"), "Material Icons");
         }
 
-        // Update is called once per frame
-        void Update()
+        protected override Widget createWidget()
         {
+            var initialState = new AppState();
 
+            var store = new Store<AppState>(AppReducer.Reduce, initialState);
+
+            return new StoreProvider<AppState>(
+                store: store,
+                child: new MaterialApp(
+                    title: "F-Pomodoro",
+                    theme: new ThemeData(
+                        primarySwatch: Colors.red
+                    ),
+                    home: new HomePage(title: "F-Pomodoro")
+                )
+            );
         }
     }
 }
