@@ -1,12 +1,10 @@
 using System.Collections.Generic;
+using QFramework.UIWidgets.ReduxPersist;
 
 namespace PomodoroApp
 {
-    public class AppState
+    public class AppState : AbstractPersistState<AppState>
     {
-        public List<Task> TasksData = new List<Task>()
-        {
-            new Task(null,"录制课时","要录制 10 个课时")
-        };
+        public List<Task> TasksData = new List<Task>();
     }
 }

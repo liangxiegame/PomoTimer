@@ -1,0 +1,19 @@
+{
+  "Version": "0.5.1",
+  "Type": 0,
+  "AccessRight": 1,
+  "DownloadUrl": null,
+  "InstallPath": "Assets/QFramework/Framework/0.Core/",
+  "DocUrl": "http://liangxiegame.com",
+  "Readme": {
+    "version": "0.5.1",
+    "content": "add ToInt Support for float type",
+    "author": "liangxiegame@163.com",
+    "date": "2019 年 04 月 30 日 18:16",
+    "VersionNumber": 501
+  },
+  "Id": null,
+  "Name": "0.Core",
+  "VersionNumber": 501,
+  "FileName": "0.Core_0.5.1.unitypackage"
+}
