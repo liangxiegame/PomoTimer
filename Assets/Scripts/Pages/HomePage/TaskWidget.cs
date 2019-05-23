@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using QF.Slidable;
 using Unity.UIWidgets.material;
 using Unity.UIWidgets.painting;
 using Unity.UIWidgets.rendering;
@@ -34,8 +35,9 @@ namespace PomodoroApp
             var task = widget.Task;
 
             // Slidable 的其他内容
-            return new ListTile(
-                title: new Container(
+            return new Slidable(
+                actionExtentRatio: 0.25f,
+                child: new Container(
                     color: Colors.white,
                     child: new Card(
                         margin: EdgeInsets.fromLTRB(4, 4, 4, 4),
@@ -91,32 +93,37 @@ namespace PomodoroApp
                             ))
                     )
                 ),
-                leading: new IconButton(
-                    icon: new Icon(
-                        Icons.archive,
-                        size: 32.0f,
-                        color: Colors.blue
+                actions: new List<Widget>()
+                {
+                    new IconButton(
+                        icon: new Icon(
+                            Icons.archive,
+                            size: 32.0f,
+                            color: Colors.blue
+                        )
+                        ,
+                        onPressed: () =>
+                        {
+                            task.Done = true;
+                            widget.OnUpdated();
+                        }
                     )
-                    ,
-                    onPressed: () =>
-                    {
-                        task.Done = true;
-                        widget.OnUpdated();
-                    }
-                ),
-                trailing: new IconButton(
-                    icon: new Icon(
-                        Icons.delete,
-                        size: 31.0f,
-                        color: Colors.red
-                    ),
-                    onPressed: () =>
-                    {
+                },
+                secondaryActions: new List<Widget>()
+                {
+                    new IconButton(
+                        icon: new Icon(
+                            Icons.delete,
+                            size: 31.0f,
+                            color: Colors.red
+                        ),
+                        onPressed: () =>
+                        {
 //                        await Manager().removeTask(task);
-                        widget.OnRemoved();
-                    }
-                )
-            );
+                            widget.OnRemoved();
+                        }
+                    )
+                });
         }
     }
 }
