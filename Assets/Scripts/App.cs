@@ -4,6 +4,7 @@ using Unity.UIWidgets.async;
 using Unity.UIWidgets.engine;
 using Unity.UIWidgets.material;
 using Unity.UIWidgets.painting;
+using Unity.UIWidgets.rendering;
 using Unity.UIWidgets.ui;
 using Unity.UIWidgets.widgets;
 using Debug = UnityEngine.Debug;
@@ -50,6 +51,8 @@ namespace PomoTimerApp
                 if (minutes == 25)
                 {
                     Debug.Log("到达 25 分钟");
+                    
+                    this.setState(() => { mTimeText = "00:00"; });
                     mStopwatch.Stop();
                     return;
                 }
@@ -57,7 +60,10 @@ namespace PomoTimerApp
                 Debug.LogFormat("DELAYED:{0}", mStopwatch.TotalSeconds);
 
 
-                mTimeText = $"{25 - mStopwatch.Minutes - 1}:{60 - mStopwatch.Seconds - 1}";
+                var minutsText = (25 - mStopwatch.Minutes - 1).ToString().PadLeft(2, '0');
+                var secondsText = (60 - mStopwatch.Seconds - 1).ToString().PadLeft(2, '0');
+                
+                mTimeText = $"{minutsText}:{secondsText}";
 
                 if (mStopwatch.IsRunning)
                 {
@@ -88,6 +94,22 @@ namespace PomoTimerApp
                 new Stack(
                     children: new List<Widget>()
                     {
+                        new Align(
+                            alignment:Alignment.topCenter,
+                            child:new Container(
+                                margin:EdgeInsets.only(top:100),
+                                child: new Column(
+                                    mainAxisSize:MainAxisSize.max,
+                                    children:new List<Widget>
+                                    {
+                                        new Text("课程制作",style:new TextStyle(
+                                            color:Colors.grey,
+                                            fontSize:30
+                                        ))
+                                    }
+                                    ) 
+                                )
+                            ),
                         new Align(
                             alignment: Alignment.center,
                             child: new Text(mTimeText, style: new TextStyle(
