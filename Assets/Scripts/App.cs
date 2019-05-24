@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Unity.UIWidgets.async;
 using Unity.UIWidgets.engine;
 using Unity.UIWidgets.material;
@@ -13,8 +12,6 @@ namespace PomoTimerApp
 {
     public class App : UIWidgetsPanel
     {
-
-
         protected override Widget createWidget()
         {
             return new TimerPage();
@@ -34,40 +31,39 @@ namespace PomoTimerApp
     {
         public readonly static TimeSpan DELAY = TimeSpan.FromMilliseconds(100);
 
-        private string mTimeText = "25:00";
+        private string mTimeText   = "25:00";
         private string mButtonText = "START";
 
-        private Timer     mTimer     = null;
-        private Stopwatch mStopwatch = null;
+        private Timer          mTimer     = null;
+        private StopwatchTimer mStopwatch = null;
 
         public override void initState()
         {
             base.initState();
 
-            mStopwatch = new Stopwatch();
+            mStopwatch = new StopwatchTimer(30);
 
             mTimer = Window.instance.periodic(DELAY, () =>
             {
-                var minutes = (int) mStopwatch.Elapsed.TotalMinutes;
+                var minutes = mStopwatch.TotalMinutes;
 
                 if (minutes == 25)
                 {
                     Debug.Log("到达 25 分钟");
+                    mStopwatch.Stop();
                     return;
                 }
 
+                Debug.LogFormat("DELAYED:{0}", mStopwatch.TotalSeconds);
 
 
-                Debug.LogFormat("DELAYED:{0}", mStopwatch.Elapsed.TotalSeconds);
-
-
-                mTimeText = $"{25 - mStopwatch.Elapsed.Minutes - 1}:{60 - mStopwatch.Elapsed.Seconds - 1}";
+                mTimeText = $"{25 - mStopwatch.Minutes - 1}:{60 - mStopwatch.Seconds - 1}";
 
                 if (mStopwatch.IsRunning)
                 {
                     this.setState(() => { mButtonText = "RUNNING"; });
                 }
-                else if ((int) mStopwatch.Elapsed.TotalSeconds == 0)
+                else if ((int) mStopwatch.TotalSeconds == 0)
                 {
                     this.setState(() => { mTimeText = "25:00"; });
                 }
@@ -110,7 +106,7 @@ namespace PomoTimerApp
                                     {
                                         if (mStopwatch.IsRunning)
                                         {
-                                            mStopwatch.Stop();   
+                                            mStopwatch.Stop();
                                         }
                                         else
                                         {
@@ -122,7 +118,6 @@ namespace PomoTimerApp
                         )
                     }
                 );
-
         }
     }
 }
