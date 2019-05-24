@@ -187,6 +187,15 @@ namespace Unity.UIWidgets.engine {
         protected virtual Widget createWidget() {
             return null;
         }
+        
+        public void recreateWidget() {
+            Widget root;
+            using (this._windowAdapter.getScope()) {
+                root = this.createWidget();
+            }
+
+            this._windowAdapter.attachRootWidget(root);
+        }
 
         internal void applyRenderTexture(Rect screenRect, Texture texture, Material mat) {
             this.texture = texture;
@@ -260,13 +269,15 @@ namespace Unity.UIWidgets.engine {
         }
 
         int getMouseButtonDown() {
+            //default mouse button key = left mouse button
+            var defaultKey = 0;
             for (int key = 0; key < mouseButtonNum; key++) {
                 if (Input.GetMouseButton(key)) {
-                    return InputUtils.getMouseButtonKey(key);
+                    defaultKey = key;
+                    break;
                 }
             }
-
-            return 0;
+            return InputUtils.getMouseButtonKey(defaultKey);
         }
 
         public void OnPointerDown(PointerEventData eventData) {
