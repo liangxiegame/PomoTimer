@@ -1,4 +1,5 @@
-﻿using Unity.UIWidgets;
+﻿using QFramework.UIWidgets.ReduxPersist;
+using Unity.UIWidgets;
 using Unity.UIWidgets.engine;
 using Unity.UIWidgets.material;
 using Unity.UIWidgets.Redux;
@@ -21,7 +22,8 @@ namespace PomoTimerApp
         {
             var store = new Store<AppState>(
                 reducer: AppReducer.Reduce,
-                initialState: new AppState());
+                initialState: AppState.Load(),
+                ReduxPersistMiddleware.create<AppState>());
 
             return new StoreProvider<AppState>(store: store,
                 child: new MaterialApp(
