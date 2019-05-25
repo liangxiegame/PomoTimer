@@ -9,7 +9,7 @@ using Unity.UIWidgets.widgets;
 
 namespace PomoTimerApp
 {
-   public class TimerPage : StatefulWidget
+    public class TimerPage : StatefulWidget
     {
         public Task TaskData { get; }
 
@@ -47,7 +47,7 @@ namespace PomoTimerApp
                 if (minutes == 25)
                 {
                     UnityEngine.Debug.Log("到达 25 分钟");
-                    
+
                     this.setState(() => { mTimeText = "00:00"; });
 
                     if (Navigator.canPop(context))
@@ -55,7 +55,7 @@ namespace PomoTimerApp
                         widget.TaskData.PomoCount++;
                         Navigator.pop(context, widget.TaskData);
                     }
-                    
+
                     return;
                 }
 
@@ -64,7 +64,7 @@ namespace PomoTimerApp
 
                 var minutsText = (25 - mStopwatch.Minutes - 1).ToString().PadLeft(2, '0');
                 var secondsText = (60 - mStopwatch.Seconds - 1).ToString().PadLeft(2, '0');
-                
+
                 mTimeText = $"{minutsText}:{secondsText}";
 
                 if (mStopwatch.IsRunning)
@@ -92,56 +92,99 @@ namespace PomoTimerApp
 
         public override Widget build(BuildContext context)
         {
-            return
-                new Stack(
-                    children: new List<Widget>()
-                    {
-                        new Align(
-                            alignment:Alignment.topCenter,
-                            child:new Container(
-                                margin:EdgeInsets.only(top:100),
-                                child: new Column(
-                                    mainAxisSize:MainAxisSize.max,
-                                    children:new List<Widget>
+            return new Scaffold(
+                backgroundColor: Colors.white,
+                body: new Material(
+                    child: new Stack(
+                        children: new List<Widget>()
+                        {
+                            new Padding(
+                                padding: EdgeInsets.only(top: 32, left: 4, right: 4),
+                                child: new Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: new List<Widget>()
                                     {
-                                        new Text(widget.TaskData.Title,style:new TextStyle(
-                                            color:Colors.grey,
-                                            fontSize:30
-                                        ))
+                                        new IconButton(
+                                            icon: new Icon(Icons.arrow_back,
+                                                color: Colors.grey,
+                                                size: 40
+                                            ),
+                                            onPressed: () =>
+                                            {
+                                                if (mStopwatch.Minutes > 0)
+                                                {
+
+                                                    widget.TaskData.PomoCount++;
+                                                    Navigator.pop(context, widget.TaskData);
+                                                }
+                                                else
+                                                {
+                                                    Navigator.pop(context);
+                                                }
+                                            }
+                                        ),
+                                        new IconButton(
+                                            icon: new Icon(Icons.done_all,
+                                                color: Colors.red,
+                                                size: 40
+                                            ),
+                                            onPressed: () =>
+                                            {
+                                                widget.TaskData.Done = true;
+                                                Navigator.pop(context, widget.TaskData);
+                                            }
+                                        )
                                     }
-                                    ) 
                                 )
                             ),
-                        new Align(
-                            alignment: Alignment.center,
-                            child: new Text(mTimeText, style: new TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 54,
-                                    fontWeight: FontWeight.bold
+                            new Align(
+                                alignment: Alignment.topCenter,
+                                child: new Container(
+                                    margin: EdgeInsets.only(top: 100),
+                                    child: new Column(
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: new List<Widget>
+                                        {
+                                            new Text(widget.TaskData.Title, style: new TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: 30
+                                            ))
+                                        }
+                                    )
                                 )
-                            )),
-                        new Align(
-                            alignment: Alignment.bottomCenter,
-                            child: new Container(
-                                margin: EdgeInsets.only(bottom: 32),
-                                child: new GestureDetector(
-                                    child: new RoundedButton(mButtonText),
-                                    onTap: () =>
-                                    {
-                                        if (mStopwatch.IsRunning)
+                            ),
+                            new Align(
+                                alignment: Alignment.center,
+                                child: new Text(mTimeText, style: new TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 54,
+                                        fontWeight: FontWeight.bold
+                                    )
+                                )),
+                            new Align(
+                                alignment: Alignment.bottomCenter,
+                                child: new Container(
+                                    margin: EdgeInsets.only(bottom: 32),
+                                    child: new GestureDetector(
+                                        child: new RoundedButton(mButtonText),
+                                        onTap: () =>
                                         {
-                                            mStopwatch.Stop();
+                                            if (mStopwatch.IsRunning)
+                                            {
+                                                mStopwatch.Stop();
+                                            }
+                                            else
+                                            {
+                                                mStopwatch.Start();
+                                            }
                                         }
-                                        else
-                                        {
-                                            mStopwatch.Start();
-                                        }
-                                    }
+                                    )
                                 )
                             )
-                        )
-                    }
-                );
+                        }
+                    )
+                )
+            );
         }
     }
 }
