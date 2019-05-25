@@ -11,6 +11,12 @@ namespace PomoTimerApp
 {
    public class TimerPage : StatefulWidget
     {
+        public Task TaskData { get; }
+
+        public TimerPage(Task taskData)
+        {
+            this.TaskData = taskData;
+        }
 
         public override State createState()
         {
@@ -43,7 +49,13 @@ namespace PomoTimerApp
                     UnityEngine.Debug.Log("到达 25 分钟");
                     
                     this.setState(() => { mTimeText = "00:00"; });
-                    mStopwatch.Stop();
+
+                    if (Navigator.canPop(context))
+                    {
+                        widget.TaskData.PomoCount++;
+                        Navigator.pop(context, widget.TaskData);
+                    }
+                    
                     return;
                 }
 
@@ -92,7 +104,7 @@ namespace PomoTimerApp
                                     mainAxisSize:MainAxisSize.max,
                                     children:new List<Widget>
                                     {
-                                        new Text("课程制作",style:new TextStyle(
+                                        new Text(widget.TaskData.Title,style:new TextStyle(
                                             color:Colors.grey,
                                             fontSize:30
                                         ))

@@ -20,9 +20,9 @@ namespace PomoTimerApp
         public override Widget build(BuildContext context)
         {
             return new Scaffold(
-                floatingActionButton: new StoreConnector<AppState,AppState>(
-                    converter:state => state,
-                    builder:(buildContext1, model, dispatcher) =>
+                floatingActionButton: new StoreConnector<AppState, AppState>(
+                    converter: state => state,
+                    builder: (buildContext1, model, dispatcher) =>
                     {
                         return new FloatingActionButton(
                             child: new Icon(
@@ -45,7 +45,7 @@ namespace PomoTimerApp
                             }
                         );
                     }
-                    ),
+                ),
                 body: new NestedScrollView(
                     headerSliverBuilder: (buildContext, scrolled) =>
                     {
@@ -70,33 +70,48 @@ namespace PomoTimerApp
                     body: new Container(
 
                         child: new Center(
-                            child:new StoreConnector<AppState,List<Task>>(
-                                converter:state => state.Tasks,
-                                builder:(buildContext, model, dispatcher) =>
+                            child: new StoreConnector<AppState, List<Task>>(
+                                converter: state => state.Tasks,
+                                builder: (buildContext, model, dispatcher) =>
                                 {
                                     if (model.Count > 0)
                                     {
                                         return ListView.builder(
-                                            itemCount:model.Count,
+                                            itemCount: model.Count,
                                             itemBuilder: (context1, index) =>
                                             {
                                                 var taskData = model[index];
 
-                                                return new ListTile(
-                                                    title: new Text(taskData.Title),
-                                                    
-                                                    trailing: new IconButton(
-                                                        icon: new Icon(
-                                                            icon: Icons.delete,
-                                                            color:Theme.of(context).primaryColor,
-                                                            size:31
-                                                        ),
-                                                        onPressed: () =>
+                                                return new InkWell(
+
+                                                    child: new TaskWidget(
+                                                        taskData,
+                                                        onComplete: () =>
+                                                        {
+                                                            taskData.Done = true;
+                                                            dispatcher.dispatch(new UpdateTaskAction(taskData));
+                                                        },
+                                                        onRemove: () =>
                                                         {
                                                             dispatcher.dispatch(new RemoveTaskAction(taskData));
-                                                        }
-                                                    )
+                                                        }),
+                                                    onTap: () =>
+                                                    {
+                                                        Navigator.of(context).push(new MaterialPageRoute(
+                                                            builder: buildContext1 => new TimerPage(taskData)
+                                                        )).Then(result =>
+                                                        {
+                                                            var task = result as Task;
+                                                            if (task != null)
+                                                            {
+                                                                dispatcher.dispatch(new UpdateTaskAction(task));
+                                                            }
+
+                                                        });
+                                                    }
                                                 );
+
+
                                             }
                                         );
                                     }
@@ -109,7 +124,7 @@ namespace PomoTimerApp
                                         );
                                     }
                                 }
-                                )
+                            )
                         )
 
                     )

@@ -19,4 +19,14 @@ namespace PomoTimerApp
 
         public  Task Task { get; }
     }
+
+    public class UpdateTaskAction
+    {
+        public UpdateTaskAction(Task task)
+        {
+            Task = task;
+        }
+
+        public Task Task { get; }
+    }
 }

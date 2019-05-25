@@ -1,4 +1,3 @@
-using Unity.UIWidgets.widgets;
 
 namespace PomoTimerApp
 {
@@ -14,6 +13,10 @@ namespace PomoTimerApp
 
                 case RemoveTaskAction removeTaskAction:
                     state.Tasks.Remove(removeTaskAction.Task);
+                    return state;
+
+                case UpdateTaskAction updateTaskAction:
+                    
                     return state;
             }
 
