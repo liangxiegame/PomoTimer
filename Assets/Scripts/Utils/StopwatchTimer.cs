@@ -5,6 +5,8 @@ namespace PomoTimerApp
     public class StopwatchTimer
     {
         private float mScale = 1.0f;
+        
+        public float Scale => mScale;
 
         public StopwatchTimer(float scale = 1.0f)
         {

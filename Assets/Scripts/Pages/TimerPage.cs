@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.UIWidgets.animation;
 using Unity.UIWidgets.async;
 using Unity.UIWidgets.material;
 using Unity.UIWidgets.painting;
@@ -24,7 +25,7 @@ namespace PomoTimerApp
         }
     }
 
-    class TimerPageState : State<TimerPage>
+    class TimerPageState : SingleTickerProviderStateMixin<TimerPage>
     {
         public readonly static TimeSpan DELAY = TimeSpan.FromMilliseconds(100);
 
@@ -34,17 +35,24 @@ namespace PomoTimerApp
         private Timer          mTimer     = null;
         private StopwatchTimer mStopwatch = null;
 
+        private int mMinutes = 25;
+
         public override void initState()
         {
             base.initState();
 
             mStopwatch = new StopwatchTimer(30);
 
+            mController = new AnimationController(duration:
+                TimeSpan.FromMinutes(mMinutes / mStopwatch.Scale),
+                vsync:this
+            );
+            
             mTimer = Window.instance.periodic(DELAY, () =>
             {
                 var minutes = mStopwatch.TotalMinutes;
 
-                if (minutes == 25)
+                if (minutes >= mMinutes)
                 {
                     UnityEngine.Debug.Log("到达 25 分钟");
 
@@ -59,7 +67,7 @@ namespace PomoTimerApp
                     return;
                 }
 
-                UnityEngine.Debug.LogFormat("DELAYED:{0}", mStopwatch.TotalSeconds);
+//                UnityEngine.Debug.LogFormat("DELAYED:{0}", mStopwatch.TotalSeconds);
 
 
                 var minutsText = (25 - mStopwatch.Minutes - 1).ToString().PadLeft(2, '0');
@@ -80,25 +88,59 @@ namespace PomoTimerApp
                     this.setState(() => { mButtonText = "PAUSED"; });
                 }
             });
+            
+            
+            
+
+
         }
 
         public override void dispose()
         {
             base.dispose();
 
+            mController.dispose();
             mStopwatch.Stop();
             mTimer.cancel();
         }
 
+        private float mBegin = 0;
+
+        private AnimationController mController;
+
+        private Animation<float> mHeightSize;
+        
+        
+        
+        
         public override Widget build(BuildContext context)
         {
+            mHeightSize = new FloatTween(begin: mBegin, end: MediaQuery.of(context).size.height - 65)
+                .animate(new CurvedAnimation(
+                    mController,
+                    Curves.easeInOut
+                ));
+            var size =new Size(MediaQuery.of(context).size.width, mHeightSize.value * 0.9f);
+
             return new Scaffold(
                 backgroundColor: Colors.white,
                 body: new Material(
                     child: new Stack(
                         children: new List<Widget>()
                         {
-                            new Padding(
+                            new AnimatedBuilder(
+                                animation:mController,
+                                builder:(buildContext, child) =>
+                                {
+                                    return new WaveAnimation(
+                                        size: size,
+                                        color: Theme.of(context).primaryColor
+                                    );
+                                }
+                                ),
+           
+                            new Container(
+                                alignment:Alignment.topCenter,
                                 padding: EdgeInsets.only(top: 32, left: 4, right: 4),
                                 child: new Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -172,10 +214,13 @@ namespace PomoTimerApp
                                             if (mStopwatch.IsRunning)
                                             {
                                                 mStopwatch.Stop();
+                                                mController.stop(canceled:false);
                                             }
                                             else
                                             {
+                                                mBegin = 50;
                                                 mStopwatch.Start();
+                                                mController.forward();
                                             }
                                         }
                                     )
