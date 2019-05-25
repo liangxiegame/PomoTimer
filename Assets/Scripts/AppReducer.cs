@@ -16,7 +16,12 @@ namespace PomoTimerApp
                     return state;
 
                 case UpdateTaskAction updateTaskAction:
-                    
+                    return state;
+                case Change2FinishedModeAction _:
+                    state.PageMode = PageMode.Finished;
+                    return state;
+                case Change2ListModeAction _:
+                    state.PageMode = PageMode.List;
                     return state;
             }
 

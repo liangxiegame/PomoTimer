@@ -29,4 +29,15 @@ namespace PomoTimerApp
 
         public Task Task { get; }
     }
+
+    public class Change2ListModeAction
+    {
+        
+    }
+    
+    public class Change2FinishedModeAction
+    {
+        
+    }
+    
 }

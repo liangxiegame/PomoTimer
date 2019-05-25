@@ -46,10 +46,11 @@ namespace PomoTimerApp
                         );
                     }
                 ),
+                drawer: new MenuDrawer(),
                 body: new NestedScrollView(
                     headerSliverBuilder: (buildContext, scrolled) =>
                     {
-                        return new List<Widget>()
+                        return new List<Widget>
                         {
                             new SliverAppBar(
                                 expandedHeight: 80.0f,
@@ -57,76 +58,31 @@ namespace PomoTimerApp
                                 pinned: false,
                                 flexibleSpace: new FlexibleSpaceBar(
                                     centerTitle: true,
-                                    title: new Text("PomoTimer",
-                                        style: new TextStyle(
-                                            fontSize: 20.0f,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white
-                                        ))
+                                    title: new StoreConnector<AppState, PageMode>(
+                                        converter: state => state.PageMode,
+                                        builder: (buildContext1, model, dispatcher) => new Text(model == PageMode.List ? "任务列表" : "已完成列表",
+                                            style: new TextStyle(
+                                                fontSize: 20.0f,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white
+                                            )))
                                 )
                             )
                         };
                     },
-                    body: new Container(
-
-                        child: new Center(
-                            child: new StoreConnector<AppState, List<Task>>(
-                                converter: state => state.Tasks,
-                                builder: (buildContext, model, dispatcher) =>
-                                {
-                                    if (model.Count > 0)
-                                    {
-                                        return ListView.builder(
-                                            itemCount: model.Count,
-                                            itemBuilder: (context1, index) =>
-                                            {
-                                                var taskData = model[index];
-
-                                                return new InkWell(
-
-                                                    child: new TaskWidget(
-                                                        taskData,
-                                                        onComplete: () =>
-                                                        {
-                                                            taskData.Done = true;
-                                                            dispatcher.dispatch(new UpdateTaskAction(taskData));
-                                                        },
-                                                        onRemove: () =>
-                                                        {
-                                                            dispatcher.dispatch(new RemoveTaskAction(taskData));
-                                                        }),
-                                                    onTap: () =>
-                                                    {
-                                                        Navigator.of(context).push(new MaterialPageRoute(
-                                                            builder: buildContext1 => new TimerPage(taskData)
-                                                        )).Then(result =>
-                                                        {
-                                                            var task = result as Task;
-                                                            if (task != null)
-                                                            {
-                                                                dispatcher.dispatch(new UpdateTaskAction(task));
-                                                            }
-
-                                                        });
-                                                    }
-                                                );
-
-
-                                            }
-                                        );
-                                    }
-                                    else
-                                    {
-                                        return new Text("Cool!Nothing to do",
-                                            style: new TextStyle(
-                                                fontSize: 24
-                                            )
-                                        );
-                                    }
-                                }
-                            )
-                        )
-
+                    body: new StoreConnector<AppState, PageMode>(
+                        converter: state => state.PageMode,
+                        builder: (buildContext, model, dispatcher) =>
+                        {
+                            if (model == PageMode.List)
+                            {
+                                return new TaskList();
+                            }
+                            else
+                            {
+                                return new FinishedList();
+                            }
+                        }
                     )
                 )
             );
