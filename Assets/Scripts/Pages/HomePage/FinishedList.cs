@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.UIWidgets.material;
@@ -9,6 +10,13 @@ namespace PomoTimerApp
 {
     public class FinishedList : StatelessWidget
     {
+        public Action<string> OnMsg { get; }
+
+        public FinishedList(Action<string> onMsg)
+        {
+            this.OnMsg = onMsg;
+        }
+        
         public override Widget build(BuildContext context)
         {
             return new Container(
@@ -33,7 +41,13 @@ namespace PomoTimerApp
                                                 taskData.Done = true;
                                                 dispatcher.dispatch(new UpdateTaskAction(taskData));
                                             },
-                                            onRemove: () => { dispatcher.dispatch(new RemoveTaskAction(taskData)); });
+                                            onRemove: () =>
+                                            {
+                                                dispatcher.dispatch(new RemoveTaskAction(taskData));
+
+                                                OnMsg($"{taskData.Title} Removed");
+
+                                            });
                                     }
                                 );
                             }

@@ -17,9 +17,18 @@ namespace PomoTimerApp
 
     class HomePageState : State<HomePage>
     {
+        GlobalKey<ScaffoldState> mKey = GlobalKey<ScaffoldState>.key();
+        
+        void ShowSnackBar(string msg)
+        {
+            var snackBar = new SnackBar(content: new Text(msg));
+            mKey.currentState.showSnackBar(snackBar);
+        }
+
         public override Widget build(BuildContext context)
         {
             return new Scaffold(
+                key:mKey,
                 floatingActionButton: new StoreConnector<AppState, AppState>(
                     converter: state => state,
                     builder: (buildContext1, model, dispatcher) =>
@@ -84,11 +93,11 @@ namespace PomoTimerApp
                         {
                             if (model.PageMode == PageMode.List)
                             {
-                                return new TaskList();
+                                return new TaskList(ShowSnackBar);
                             }
                             else if (model.PageMode == PageMode.Finished)
                             {
-                                return new FinishedList();
+                                return new FinishedList(ShowSnackBar);
                             }
                             else
                             {
