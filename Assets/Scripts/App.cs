@@ -6,6 +6,7 @@ using Unity.UIWidgets.Redux;
 using Unity.UIWidgets.ui;
 using Unity.UIWidgets.widgets;
 using UnityEngine;
+using Color = Unity.UIWidgets.ui.Color;
 
 namespace PomoTimerApp
 {
@@ -26,13 +27,16 @@ namespace PomoTimerApp
                 ReduxPersistMiddleware.create<AppState>());
 
             return new StoreProvider<AppState>(store: store,
-                child: new MaterialApp(
-                    title: "PomoTimer",
-                    theme: new ThemeData(
-                        primarySwatch: Colors.red
+                child: new StoreConnector<AppState, MaterialColor>(
+                    (context, model, dispatcher) => new MaterialApp(
+                        title: "PomoTimer",
+                        theme: new ThemeData(
+                            primarySwatch: model
+                        ),
+                        home: new HomePage()
                     ),
-                    home: new HomePage()
+                    converter: state => state.ThemeColorType.ToMaterialColor()
                 ));
         }
     }
-}
+}    

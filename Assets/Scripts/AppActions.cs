@@ -1,3 +1,5 @@
+using Unity.UIWidgets.material;
+
 namespace PomoTimerApp
 {
     public class AddTaskAction
@@ -38,6 +40,31 @@ namespace PomoTimerApp
     public class Change2FinishedModeAction
     {
         
+    }
+    
+    public class Change2SettingModeAction
+    {
+        
+    }
+
+    public class ChangeThemeColorAction
+    {
+        public ThemeColor color { get; }
+
+        public ChangeThemeColorAction(ThemeColor color)
+        {
+            this.color = color;
+        }
+    }
+
+    public class ChangePomoMinutesAction
+    {
+        public ChangePomoMinutesAction(int minutes)
+        {
+            Minutes = minutes;
+        }
+
+        public int Minutes { get; }
     }
     
 }

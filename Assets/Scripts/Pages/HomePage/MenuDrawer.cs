@@ -22,7 +22,7 @@ namespace PomoTimerApp
                             {
                                 new Container(
                                     height: 80,
-                                    color: Colors.red
+                                    color: Theme.of(context).primaryColor
                                 ),
                                 new GestureDetector(
                                     child: new Container(
@@ -34,7 +34,7 @@ namespace PomoTimerApp
                                             {
                                                 new Icon(
                                                     Icons.list,
-                                                    color: Colors.red
+                                                    color: Theme.of(context).primaryColor
                                                 ),
                                                 new Padding(
                                                     padding: EdgeInsets.only(left: 10),
@@ -65,7 +65,7 @@ namespace PomoTimerApp
                                             {
                                                 new Icon(
                                                     Icons.done,
-                                                    color: Colors.red
+                                                    color: Theme.of(context).primaryColor
                                                 ),
                                                 new Padding(
                                                     padding: EdgeInsets.only(left: 10),
@@ -83,6 +83,37 @@ namespace PomoTimerApp
                                         else
                                         {
                                             dispatcher.dispatch(new Change2FinishedModeAction());
+                                        }
+
+                                    }),
+                                new GestureDetector(
+                                    child: new Container(
+                                        color: model == PageMode.Setting ? Colors.grey[300] : Colors.white,
+                                        padding: EdgeInsets.symmetric(20, 4),
+                                        child: new Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: new List<Widget>()
+                                            {
+                                                new Icon(
+                                                    Icons.settings,
+                                                    color: Theme.of(context).primaryColor
+                                                ),
+                                                new Padding(
+                                                    padding: EdgeInsets.only(left: 10),
+                                                    child: new Text("设置")
+                                                )
+                                            }
+                                        )
+                                    ),
+                                    onTap: () =>
+                                    {
+                                        if (model == PageMode.Setting)
+                                        {
+
+                                        }
+                                        else
+                                        {
+                                            dispatcher.dispatch(new Change2SettingModeAction());
                                         }
 
                                     })

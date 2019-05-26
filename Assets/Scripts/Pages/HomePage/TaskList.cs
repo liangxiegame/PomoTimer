@@ -14,17 +14,20 @@ namespace PomoTimerApp
             return new Container(
 
                 child: new Center(
-                    child: new StoreConnector<AppState, List<Task>>(
-                        converter: state => state.Tasks.Where(task => !task.Done).ToList(),
+                    child: new StoreConnector<AppState, AppState>(
+                        converter: state => state,
                         builder: (buildContext, model, dispatcher) =>
                         {
-                            if (model.Count > 0)
+
+                            var taskList = model.Tasks.Where(task => !task.Done).ToList();
+                            
+                            if (taskList.Count > 0)
                             {
                                 return ListView.builder(
-                                    itemCount: model.Count,
+                                    itemCount: taskList.Count,
                                     itemBuilder: (context1, index) =>
                                     {
-                                        var taskData = model[index];
+                                        var taskData = taskList[index];
 
                                         return new InkWell(
 
@@ -42,7 +45,7 @@ namespace PomoTimerApp
                                             onTap: () =>
                                             {
                                                 Navigator.of(context).push(new MaterialPageRoute(
-                                                    builder: buildContext1 => new TimerPage(taskData)
+                                                    builder: buildContext1 => new TimerPage(taskData,model.PomoMinutes)
                                                 )).Then(result =>
                                                 {
                                                     var task = result as Task;

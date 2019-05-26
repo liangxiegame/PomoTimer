@@ -33,7 +33,7 @@ namespace PomoTimerApp
                         leading: new IconButton(
                             icon:new Icon(
                                 Icons.check_circle_outline,
-                                color:mTaskData.Done ? Colors.green : Colors.red)
+                                color:mTaskData.Done ? Colors.green : Theme.of(context).primaryColor)
                             ,
                             onPressed:()=>mOnComplete()
                         ),

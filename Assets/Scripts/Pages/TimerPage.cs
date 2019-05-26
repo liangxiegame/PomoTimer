@@ -13,10 +13,13 @@ namespace PomoTimerApp
     public class TimerPage : StatefulWidget
     {
         public Task TaskData { get; }
+        
+        public int Minutes { get; }
 
-        public TimerPage(Task taskData)
+        public TimerPage(Task taskData, int minutes)
         {
             this.TaskData = taskData;
+            Minutes = minutes;
         }
 
         public override State createState()
@@ -35,7 +38,6 @@ namespace PomoTimerApp
         private Timer          mTimer     = null;
         private StopwatchTimer mStopwatch = null;
 
-        private int mMinutes = 25;
 
         public override void initState()
         {
@@ -44,7 +46,7 @@ namespace PomoTimerApp
             mStopwatch = new StopwatchTimer(30);
 
             mController = new AnimationController(duration:
-                TimeSpan.FromMinutes(mMinutes / mStopwatch.Scale),
+                TimeSpan.FromMinutes(widget.Minutes / mStopwatch.Scale),
                 vsync:this
             );
             
@@ -52,10 +54,8 @@ namespace PomoTimerApp
             {
                 var minutes = mStopwatch.TotalMinutes;
 
-                if (minutes >= mMinutes)
+                if (minutes >= widget.Minutes)
                 {
-                    UnityEngine.Debug.Log("到达 25 分钟");
-
                     this.setState(() => { mTimeText = "00:00"; });
 
                     if (Navigator.canPop(context))
@@ -70,10 +70,10 @@ namespace PomoTimerApp
 //                UnityEngine.Debug.LogFormat("DELAYED:{0}", mStopwatch.TotalSeconds);
 
 
-                var minutsText = (25 - mStopwatch.Minutes - 1).ToString().PadLeft(2, '0');
+                var minutesText = (widget.Minutes - mStopwatch.Minutes - 1).ToString().PadLeft(2, '0');
                 var secondsText = (60 - mStopwatch.Seconds - 1).ToString().PadLeft(2, '0');
 
-                mTimeText = $"{minutsText}:{secondsText}";
+                mTimeText = $"{minutesText}:{secondsText}";
 
                 if (mStopwatch.IsRunning)
                 {
@@ -81,7 +81,7 @@ namespace PomoTimerApp
                 }
                 else if ((int) mStopwatch.TotalSeconds == 0)
                 {
-                    this.setState(() => { mTimeText = "25:00"; });
+                    this.setState(() => { mTimeText = $"{widget.Minutes}:00";});
                 }
                 else
                 {
@@ -167,7 +167,7 @@ namespace PomoTimerApp
                                         ),
                                         new IconButton(
                                             icon: new Icon(Icons.done_all,
-                                                color: Colors.red,
+                                                color: Theme.of(context).primaryColor,
                                                 size: 40
                                             ),
                                             onPressed: () =>

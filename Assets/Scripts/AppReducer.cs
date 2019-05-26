@@ -23,6 +23,15 @@ namespace PomoTimerApp
                 case Change2ListModeAction _:
                     state.PageMode = PageMode.List;
                     return state;
+                case Change2SettingModeAction _:
+                    state.PageMode = PageMode.Setting;
+                    return state;
+                case ChangeThemeColorAction changeThemeColorAction:
+                    state.ThemeColorType = changeThemeColorAction.color;
+                    return state;
+                case ChangePomoMinutesAction changePomoMinutesAction:
+                    state.PomoMinutes = changePomoMinutesAction.Minutes;
+                    return state;
             }
 
             return state;

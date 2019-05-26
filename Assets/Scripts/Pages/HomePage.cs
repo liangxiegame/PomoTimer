@@ -24,26 +24,33 @@ namespace PomoTimerApp
                     converter: state => state,
                     builder: (buildContext1, model, dispatcher) =>
                     {
-                        return new FloatingActionButton(
-                            child: new Icon(
-                                Icons.add,
-                                color: Colors.white
-                            ),
-                            onPressed: () =>
-                            {
-                                Navigator.push(context, new MaterialPageRoute(
-                                    builder: (buildContext => { return new NewTaskPage(); })
-                                )).Then(result =>
+                        if (model.PageMode == PageMode.List)
+                        {
+                            return new FloatingActionButton(
+                                child: new Icon(
+                                    Icons.add,
+                                    color: Colors.white
+                                ),
+                                onPressed: () =>
                                 {
-                                    var newTask = result as Task;
-
-                                    if (newTask != null)
+                                    Navigator.push(context, new MaterialPageRoute(
+                                        builder: (buildContext => { return new NewTaskPage(); })
+                                    )).Then(result =>
                                     {
-                                        dispatcher.dispatch(new AddTaskAction(newTask));
-                                    }
-                                });
-                            }
-                        );
+                                        var newTask = result as Task;
+
+                                        if (newTask != null)
+                                        {
+                                            dispatcher.dispatch(new AddTaskAction(newTask));
+                                        }
+                                    });
+                                }
+                            );
+                        }
+                        else
+                        {
+                            return null;
+                        }
                     }
                 ),
                 drawer: new MenuDrawer(),
@@ -60,7 +67,8 @@ namespace PomoTimerApp
                                     centerTitle: true,
                                     title: new StoreConnector<AppState, PageMode>(
                                         converter: state => state.PageMode,
-                                        builder: (buildContext1, model, dispatcher) => new Text(model == PageMode.List ? "任务列表" : "已完成列表",
+                                        builder: (buildContext1, model, dispatcher) => new Text(
+                                            model.ToTitle(),
                                             style: new TextStyle(
                                                 fontSize: 20.0f,
                                                 fontWeight: FontWeight.bold,
@@ -70,17 +78,21 @@ namespace PomoTimerApp
                             )
                         };
                     },
-                    body: new StoreConnector<AppState, PageMode>(
-                        converter: state => state.PageMode,
+                    body: new StoreConnector<AppState, AppState>(
+                        converter: state => state,
                         builder: (buildContext, model, dispatcher) =>
                         {
-                            if (model == PageMode.List)
+                            if (model.PageMode == PageMode.List)
                             {
                                 return new TaskList();
                             }
-                            else
+                            else if (model.PageMode == PageMode.Finished)
                             {
                                 return new FinishedList();
+                            }
+                            else
+                            {
+                                return new Setting(model.PomoMinutes);
                             }
                         }
                     )
